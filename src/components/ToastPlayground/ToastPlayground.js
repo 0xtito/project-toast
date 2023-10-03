@@ -1,50 +1,18 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 
 import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
 import Toast from "../Toast/Toast";
 import ToastShelf from "../ToastShelf/ToastShelf";
+import { ToasterContext } from "../ToastProvider/ToastProvider";
 
 const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
 
 function ToastPlayground() {
   const [message, setMessage] = useState("");
   const [variantType, setVariantType] = useState("notice");
-  const [activeToasts, setActiveToasts] = useState([]);
-
-  const handleClose = (clickedId) => {
-    setActiveToasts((currentActiveToasts) => {
-      return currentActiveToasts.filter(({ id, ...rest }) => id !== clickedId);
-    });
-  };
-
-  const handlePopToast = (e) => {
-    e.preventDefault();
-
-    setActiveToasts((currentActiveToasts) => [
-      ...currentActiveToasts,
-      {
-        variantType,
-        message,
-        id: crypto.randomUUID(),
-      },
-    ]);
-  };
-
-  // useEffect(() => {
-  //   let timer;
-
-  //   if (displayToast) {
-  //     timer = setTimeout(() => {
-  //       setDisplayToast(false);
-  //     }, 2000);
-  //   }
-
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [displayToast]);
+  const { activeToasts, handlePopToast } = useContext(ToasterContext);
 
   return (
     <div className={styles.wrapper}>
@@ -53,10 +21,7 @@ function ToastPlayground() {
         <h1>Toast Playground</h1>
       </header>
 
-      {activeToasts.length > 0 && (
-        // <Toast type={variantType} message={message} handleClose={handleClose} />
-        <ToastShelf toasts={activeToasts} handleClose={handleClose} />
-      )}
+      {activeToasts.length > 0 && <ToastShelf />}
 
       <div className={styles.controlsWrapper}>
         <div className={styles.row}>
@@ -72,9 +37,7 @@ function ToastPlayground() {
               id="message"
               className={styles.messageInput}
               value={message}
-              onChange={(e) =>
-                setMessage(e.target.value) && e.target.parentElement.id
-              }
+              onChange={(e) => setMessage(e.target.value)}
             />
           </div>
         </div>
@@ -101,7 +64,9 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={handlePopToast}>Pop Toast!</Button>
+            <Button onClick={() => handlePopToast(variantType, message)}>
+              Pop Toast!
+            </Button>
           </div>
         </div>
       </div>
