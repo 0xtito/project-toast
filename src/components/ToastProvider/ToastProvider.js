@@ -7,7 +7,7 @@ export function ToastProvider({ children }) {
 
   const handleClose = useCallback((clickedId) => {
     setActiveToasts((currentActiveToasts) => {
-      return currentActiveToasts.filter(({ id, ...rest }) => id !== clickedId);
+      return currentActiveToasts.filter(({ id }) => id !== clickedId);
     });
   }, []);
 

@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 
 import Toast from "../Toast";
 import styles from "./ToastShelf.module.css";
 
 import { ToasterContext } from "../ToastProvider/ToastProvider";
+import useClearAll from "../../hooks/useClearAll";
 
 function ToastShelf() {
   const {
@@ -12,17 +13,9 @@ function ToastShelf() {
     handleCloseAllToasts,
   } = useContext(ToasterContext);
 
-  useEffect(() => {
-    const checkEscapePressed = (e) => {
-      if (e.key === "Escape") handleCloseAllToasts();
-    };
-
-    window.addEventListener("keydown", checkEscapePressed);
-
-    return () => {
-      window.removeEventListener("keydown", checkEscapePressed);
-    };
-  }, []);
+  useClearAll(() => {
+    handleCloseAllToasts();
+  }, "Escape");
 
   return (
     <ol

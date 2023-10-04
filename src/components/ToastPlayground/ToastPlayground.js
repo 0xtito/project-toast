@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 
 import Button from "../Button";
 
 import styles from "./ToastPlayground.module.css";
-import Toast from "../Toast/Toast";
 import ToastShelf from "../ToastShelf/ToastShelf";
 import { ToasterContext } from "../ToastProvider/ToastProvider";
 
@@ -13,6 +12,7 @@ function ToastPlayground() {
   const [message, setMessage] = useState("");
   const [variantType, setVariantType] = useState("notice");
   const { activeToasts, handlePopToast } = useContext(ToasterContext);
+  const textAreaRef = useRef();
 
   return (
     <div className={styles.wrapper}>
@@ -34,6 +34,7 @@ function ToastPlayground() {
           </label>
           <div className={styles.inputWrapper}>
             <textarea
+              ref={textAreaRef}
               id="message"
               className={styles.messageInput}
               value={message}
@@ -64,7 +65,13 @@ function ToastPlayground() {
         <div className={styles.row}>
           <div className={styles.label} />
           <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={() => handlePopToast(variantType, message)}>
+            <Button
+              onClick={() => {
+                handlePopToast(variantType, message);
+                setMessage("");
+                textAreaRef.current.focus();
+              }}
+            >
               Pop Toast!
             </Button>
           </div>
